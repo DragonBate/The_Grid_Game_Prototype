@@ -34,46 +34,46 @@ void ABase_Turret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (TurretScanTimer >= 1)
+	TurretScanTimer += DeltaTime;
+	TurretRateTimer += DeltaTime;
+
+	if(TurretScanTimer >= 1)
 	{
 		TurretScanTimer = 0;
-
-
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABase_Minion_Character::StaticClass(), FoundActors);
 	}
-	else
-	{
-		TurretScanTimer += DeltaTime;
-	}
 
-	// If
-	if (FoundActors.IsValidIndex(0) == true && FoundActors[0] != nullptr && IsValid(FoundActors[0]) == true)
+	AActor* TargetActor = FilterEnemies(FoundActors);
+
+	if(TargetActor != nullptr)
 	{
-		FVector TempLoc = (FoundActors[0]->GetActorLocation()) - (TurretHead->RelativeLocation + GetActorLocation());
+
+		FVector TempLoc = (TargetActor->GetActorLocation()) - (TurretHead->RelativeLocation + GetActorLocation());
 
 		TurretHead->SetWorldRotation(FMath::RInterpTo(TurretHead->GetComponentRotation(), TempLoc.Rotation(),DeltaTime,TurretRotSpeed)	);
 
 
 
+		// TempLoc.Rotation().Equals(TurretHead->GetComponentRotation(),5)
+		// FVector::DotProduct((TargetActor->GetActorLocation()) - (TurretHead->RelativeLocation + GetActorLocation()), TurretHead->GetForwardVector()) >= 0.95
 
-
-		if (FVector::DotProduct((FoundActors[0]->GetActorLocation()) - (TurretHead->RelativeLocation + GetActorLocation()),TurretHead->GetForwardVector())	>= 0.8)
-		//{
-			if (TurretRateTimer >= TurretConfig.TimeBetweenShots)
+		// If Turret Angle close enough - Currently: 5 Degrees
+		if(TempLoc.Rotation().Equals(TurretHead->GetComponentRotation(), 5))
+		{
+			// If Fire Rate Timer Has Reached Limit
+			if(TurretRateTimer >= TurretConfig.TimeBetweenShots)
 			{
 				TurretRateTimer = 0;
-				Fire();
+				ABase_Minion_Character* Enemy = Cast<ABase_Minion_Character>(TargetActor);
+				if(Enemy != nullptr && IsValid(Enemy))
+				{
+					Enemy->DamageMinion(TurretConfig.TurretDamage);
+				}
+				// Fire();
 			}
-			else
-			{
-				TurretRateTimer += DeltaTime;
-			}
-
-
-
-
-		//}
+		}
 	}
+	;
 }
 
 void ABase_Turret::Fire()
@@ -105,6 +105,23 @@ void ABase_Turret::Fire()
 void ABase_Turret::ProjectileFire()
 {
 
+}
+
+
+AActor * ABase_Turret::FilterEnemies(TArray<AActor*> inputArray)
+{
+	float TempDist = TurretConfig.WeaponRange;
+	AActor* TempActor = nullptr;
+		for(AActor* fActor : FoundActors)
+		{
+			FVector TempLoc = (fActor->GetActorLocation() - GetActorLocation());
+			if(TempLoc.Size() < TempDist)
+			{
+				TempDist = TempLoc.Size();
+				TempActor = fActor;
+			}
+		}
+	return TempActor;
 }
 
 void ABase_Turret::Instant_Fire()

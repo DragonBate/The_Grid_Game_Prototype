@@ -25,7 +25,7 @@ struct FTurretData
 	GENERATED_USTRUCT_BODY()
 
 		UPROPERTY(editDefaultsOnly, Category = Config)
-		float Damage;
+		int32 TurretDamage;
 
 	UPROPERTY(editDefaultsOnly, Category = Config)
 		float TimeBetweenShots;
@@ -35,9 +35,6 @@ struct FTurretData
 
 	UPROPERTY(editDefaultsOnly, Category = Config)
 		float WeaponSpread;
-
-	UPROPERTY(editDefaultsOnly, Category = Config)
-		FString Name;
 
 	UPROPERTY(editDefaultsOnly, Category = Config)
 		int Priority;
@@ -70,6 +67,7 @@ public:
 
 	TArray<AActor*> FoundActors;
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -79,6 +77,11 @@ protected:
 
 	UFUNCTION()
 		virtual	void ProjectileFire();
+
+	// Filters Array of AActors*(Base_Enemy_Character) and outputs optimal Target
+	UFUNCTION()
+		AActor* FilterEnemies(TArray<AActor*> inputArray);
+
 
 	FHitResult TurretTrace(const FVector &TraceFrom, const FVector &TraceTo) const;
 

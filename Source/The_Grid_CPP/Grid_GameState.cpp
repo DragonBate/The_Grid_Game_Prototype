@@ -11,6 +11,12 @@ AGrid_GameState::AGrid_GameState()
 	{
 		TurretTable = TurretTable_BP.Object;
 	}
+
+	ConstructorHelpers::FObjectFinder<UDataTable> MinionTable_BP(TEXT("DataTable'/Game/DataTables/Minion_DT.Minion_DT'"));
+	if(MinionTable_BP.Object != nullptr)
+	{
+		MinionTable = MinionTable_BP.Object;
+	}
 }
 
 void AGrid_GameState::GenerateGridID(AGrid_Tile_Manager * inputManager)
@@ -58,5 +64,14 @@ int32 AGrid_GameState::Add_To_Power(int32 inputNum)
 {
 	GridPower = GridPower + inputNum;
 	return GridPower;
+}
+
+void AGrid_GameState::DecreaseCoreHealth()
+{
+	CoreHealth -= 1;
+	if(CoreHealth <= 0)
+	{
+		UE_LOG(LogTemp,Warning, TEXT("Game Over"));
+	}
 }
 

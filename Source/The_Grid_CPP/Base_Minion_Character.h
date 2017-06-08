@@ -14,6 +14,22 @@ public:
 	// Sets default values for this character's properties
 	ABase_Minion_Character();
 
+	UPROPERTY(editDefaultsOnly, Category = Config)
+		FName Minion_Name = TEXT("Default");
+
+	UPROPERTY(VisibleAnywhere, Category = Config)
+		int32 Minion_Health = 100;
+
+	UPROPERTY(VisibleAnywhere, Category = Config)
+		float Minion_Speed = 500;
+
+	UPROPERTY(VisibleAnywhere, Category = Config)
+		int32 Minion_Currency = 1;
+
+
+	UFUNCTION(BlueprintCallable)
+		void DamageMinion(int32 inputDamage);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

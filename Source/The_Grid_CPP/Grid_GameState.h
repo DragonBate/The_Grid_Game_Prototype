@@ -7,6 +7,7 @@
 #include "Grid_Tile.h"
 #include "GSFuncLib.h"
 #include "Base_Turret.h"
+#include "Grid_Core.h"
 #include "Engine.h"
 #include "Grid_GameState.generated.h"
 
@@ -27,12 +28,32 @@ struct FTurrretDataStruct : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<ABase_Turret> Turret_Class;
 
-
 	FTurrretDataStruct()
 	{
 		T_Price = 0;
 		T_Power = 1;
 		bisTurret = false;
+	}
+
+};
+
+USTRUCT(BlueprintType)
+struct FMinionDataStruct: public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 M_Currency;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 M_Health;
+
+	FMinionDataStruct()
+	{
+		M_Currency = 0;
+		M_Speed = 500;
+		M_Health = 100;
 	}
 
 };
@@ -54,7 +75,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 GridPower = 5;
 
-	UDataTable* TurretTable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 CoreHealth = 1;
+
+	UPROPERTY()
+		UDataTable* TurretTable;
+
+	UPROPERTY()
+		UDataTable* MinionTable;
 
 
 
@@ -70,4 +98,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		int32 Add_To_Power(int32 inputNum);
+
+	UFUNCTION(BlueprintCallable)
+		void DecreaseCoreHealth();
+
+
 };
