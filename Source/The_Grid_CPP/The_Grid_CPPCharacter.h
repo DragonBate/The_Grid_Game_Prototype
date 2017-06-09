@@ -84,6 +84,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
 	TArray <class AWeapon*> Inventory;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
+		int32 SelectedBuilding;
+
+	UPROPERTY()
+		UDataTable* TurretTable;
+
+
 protected:
 
 	/** Fires a projectile. */
@@ -137,6 +144,21 @@ protected:
 		void GiveDefaultWeapon();
 		
 		AActor* FoundTile;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Config)
+		bool Tile_CanBuy = true;
+
+	UFUNCTION()
+		void BuildPiece();
+
+	UFUNCTION()
+		void WallButton_1();
+
+	UFUNCTION()
+		void MachineButton_2();
+
+	UFUNCTION()
+		void SniperButton_3();
 
 protected:
 	// APawn interface

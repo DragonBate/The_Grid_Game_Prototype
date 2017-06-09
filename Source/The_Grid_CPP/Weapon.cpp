@@ -37,13 +37,13 @@ void AWeapon::Fire()
 {
 	if (ProjectileType == EWeaponProjectile::EBullet)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Bullet"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Bullet"));
 		Instant_Fire();
 	}
 
 	if (ProjectileType == EWeaponProjectile::ESpread)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Spread"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Spread"));
 
 		for (int32 i = 0; i <= WeaponConfig.WeaponSpread; i++)
 		{
@@ -53,7 +53,7 @@ void AWeapon::Fire()
 
 	if (ProjectileType == EWeaponProjectile::EProjectile)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Projectile"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Projectile"));
 		ProjectileFire();
 
 	}
@@ -104,8 +104,8 @@ void AWeapon::ProcessInstantHit(const FHitResult & Impact, const FVector & Origi
 	ABase_Minion_Character* Enemy = Cast<ABase_Minion_Character>(Impact.GetActor());
 	if (Enemy)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("YOU HIT AN ENEMY!"));
-		Enemy->Destroy();
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("YOU HIT AN ENEMY!"));
+		Enemy->DamageMinion(WeaponConfig.Damage);
 	}
 }
 
@@ -129,8 +129,7 @@ void AWeapon::AttachToPlayer()
 
 		//Attach New Weapon
 		WeaponMesh->SetHiddenInGame(false);
-		WeaponMesh->SetupAttachment(Character, "GripPoint");
-		WeaponMesh->AttachTo(Character, "GripPoint"); //FAttachmentTransformRules(EAttachmentRule::SnapToTarget
+		WeaponMesh->AttachToComponent(Character, FAttachmentTransformRules::KeepRelativeTransform, "GripPoint");
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, "Attach " + FString(WeaponConfig.Name) + " To Player "); 
 	}
 }
@@ -140,10 +139,9 @@ void AWeapon::DetachFromPlayer()
 	if (MyPawn)
 	{
 		//Detach Weapon from player
-		WeaponMesh->DetachFromParent();
 		WeaponMesh->SetHiddenInGame(true);
+		WeaponMesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, "Detach " + FString(WeaponConfig.Name) + " From Player ");
-
 	}
 }
 

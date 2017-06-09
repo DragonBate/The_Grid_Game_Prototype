@@ -54,6 +54,7 @@ void ABase_Minion_Character::BeginPlay()
 				Minion_Health = TempData->M_Health;
 				Minion_Speed = TempData->M_Speed;
 				Minion_Currency = TempData->M_Currency;
+				Minion_CoreDamage = TempData->M_CoreDamage;
 			}
 		}
 	}

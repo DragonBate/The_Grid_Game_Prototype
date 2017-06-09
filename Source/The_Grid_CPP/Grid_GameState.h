@@ -48,12 +48,16 @@ struct FMinionDataStruct: public FTableRowBase
 		float M_Speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 M_Health;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 M_CoreDamage;
+
 
 	FMinionDataStruct()
 	{
 		M_Currency = 0;
 		M_Speed = 500;
 		M_Health = 100;
+		M_CoreDamage = 1;
 	}
 
 };
@@ -76,7 +80,7 @@ public:
 		int32 GridPower = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 CoreHealth = 1;
+		int32 CoreHealth = 100;
 
 	UPROPERTY()
 		UDataTable* TurretTable;
@@ -100,7 +104,7 @@ public:
 		int32 Add_To_Power(int32 inputNum);
 
 	UFUNCTION(BlueprintCallable)
-		void DecreaseCoreHealth();
+		void DecreaseCoreHealth(int32 inputNum = 1);
 
 
 };

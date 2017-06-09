@@ -26,6 +26,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Config)
 		int32 Minion_Currency = 1;
 
+	UPROPERTY(VisibleAnywhere, Category = Config)
+		int32 Minion_CoreDamage = 1;
+
 
 	UFUNCTION(BlueprintCallable)
 		void DamageMinion(int32 inputDamage);

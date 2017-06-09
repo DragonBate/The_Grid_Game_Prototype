@@ -28,7 +28,6 @@ void ABase_Turret::BeginPlay()
 }
 
 
-
 // Called every frame
 void ABase_Turret::Tick(float DeltaTime)
 {
@@ -61,56 +60,24 @@ void ABase_Turret::Tick(float DeltaTime)
 		if(TempLoc.Rotation().Equals(TurretHead->GetComponentRotation(), 5))
 		{
 			// If Fire Rate Timer Has Reached Limit
-			if(TurretRateTimer >= TurretConfig.TimeBetweenShots)
+			if(TurretRateTimer >= TimeBetweenShots)
 			{
 				TurretRateTimer = 0;
 				ABase_Minion_Character* Enemy = Cast<ABase_Minion_Character>(TargetActor);
 				if(Enemy != nullptr && IsValid(Enemy))
 				{
-					Enemy->DamageMinion(TurretConfig.TurretDamage);
+					Enemy->DamageMinion(TurretDamage);
 				}
-				// Fire();
 			}
 		}
 	}
 	;
 }
 
-void ABase_Turret::Fire()
-{
-	if (ProjectileType == ETurretProjectile::EBullet)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Bullet"));
-		Instant_Fire();
-	}
-
-	if (ProjectileType == ETurretProjectile::ESpread)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Spread"));
-
-		for (int32 i = 0; i <= TurretConfig.WeaponSpread; i++)
-		{
-			Instant_Fire();
-		}
-	}
-
-	if (ProjectileType == ETurretProjectile::EProjectile)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Projectile"));
-		ProjectileFire();
-
-	}
-}
-
-void ABase_Turret::ProjectileFire()
-{
-
-}
-
 
 AActor * ABase_Turret::FilterEnemies(TArray<AActor*> inputArray)
 {
-	float TempDist = TurretConfig.WeaponRange;
+	float TempDist = WeaponRange;
 	AActor* TempActor = nullptr;
 		for(AActor* fActor : FoundActors)
 		{
@@ -123,51 +90,5 @@ AActor * ABase_Turret::FilterEnemies(TArray<AActor*> inputArray)
 		}
 	return TempActor;
 }
-
-void ABase_Turret::Instant_Fire()
-{
-	const int32 RandomSeed = FMath::Rand();
-	FRandomStream WeaponRandomStream(RandomSeed);
-	const float CurrentSpread = TurretConfig.WeaponSpread;
-	const float SpreadCone = FMath::DegreesToRadians(TurretConfig.WeaponSpread * 0.5f);
-	const FVector AimDir = TurretMesh->GetComponentRotation().Vector();
-	const FVector StartTrace = TurretMesh->GetComponentLocation();
-	const FVector ShootDir = WeaponRandomStream.VRandCone(AimDir, SpreadCone, SpreadCone);
-	const FVector EndTrace = StartTrace + ShootDir * TurretConfig.WeaponRange;
-	const FHitResult Impact = TurretTrace(StartTrace, EndTrace);
-
-	ProcessInstantHit(Impact, StartTrace, ShootDir, RandomSeed, CurrentSpread);
-
-}
-FHitResult ABase_Turret::TurretTrace(const FVector & TraceFrom, const FVector & TraceTo) const
-{
-	static FName WeaponFireTag = FName(TEXT("WeaponTrace"));
-
-	FCollisionQueryParams TraceParams(WeaponFireTag, true, Instigator);
-	TraceParams.bTraceComplex = true;
-	TraceParams.bTraceAsyncScene = true;
-	TraceParams.AddIgnoredActor(this);
-
-	FHitResult Hit(ForceInit);
-
-	GetWorld()->LineTraceSingleByChannel(Hit, TraceFrom, TraceTo, TRACE_WEAPON, TraceParams);
-
-	return Hit;
-}
-
-void ABase_Turret::ProcessInstantHit(const FHitResult & Impact, const FVector & Origin, const FVector & ShootDir, int32 RandomSeed, float ReticleSpread)
-{
-	const FVector EndTrace = Origin + ShootDir * TurretConfig.WeaponRange;
-	const FVector EndPoint = Impact.GetActor() ? Impact.ImpactPoint : EndTrace;
-	DrawDebugLine(this->GetWorld(), Origin, Impact.TraceEnd, FColor::Red, true, 0.5f, 10.0f);
-
-	ABase_Minion_Character* Enemy = Cast<ABase_Minion_Character>(Impact.GetActor());
-	if (Enemy)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("YOU HIT AN ENEMY!"));
-		Enemy->Destroy();
-	}
-}
-
 
 

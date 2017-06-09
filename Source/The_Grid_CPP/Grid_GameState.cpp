@@ -66,9 +66,9 @@ int32 AGrid_GameState::Add_To_Power(int32 inputNum)
 	return GridPower;
 }
 
-void AGrid_GameState::DecreaseCoreHealth()
+void AGrid_GameState::DecreaseCoreHealth(int32 inputNum)
 {
-	CoreHealth -= 1;
+	CoreHealth -= inputNum;
 	if(CoreHealth <= 0)
 	{
 		UE_LOG(LogTemp,Warning, TEXT("Game Over"));
